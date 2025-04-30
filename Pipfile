@@ -1,0 +1,38 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[packages]
+torch = "==2.2.0"
+torchvision = "*"
+pandas = "*"
+numpy = "<2"
+scikit-learn = "*"
+segmentation-models-pytorch = "*"
+transformers = "*"
+fastapi = "*"
+tqdm = "*"
+uvicorn = "*"
+pillow = "*"
+python-multipart = "*"
+
+[dev-packages]
+jupyter = "*"
+ipykernel = "*"
+matplotlib = "*"
+seaborn = "*"
+gdown = "*"
+nibabel = "*"
+opencv-python-headless = "*"
+scikit-learn = "*"
+imageio = "*"
+mlflow = "*"
+transformers = "*"
+pyyaml = "*"
+optuna = "*"
+black = "*"
+isort = "*"
+
+[requires]
+python_version = "3.10"

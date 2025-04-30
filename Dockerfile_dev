@@ -1,0 +1,47 @@
+# Use NVIDIA base image for GPU-enabled containers
+FROM nvidia/cuda:12.1.1-cudnn8-runtime-ubuntu22.04
+
+# Environment setup
+ENV DEBIAN_FRONTEND=noninteractive \
+    LANG=C.UTF-8 \
+    LC_ALL=C.UTF-8
+
+# Install Python 3.10.12 explicitly using deadsnakes
+RUN apt-get update && apt-get install -y \
+    software-properties-common && \
+    add-apt-repository ppa:deadsnakes/ppa && \
+    apt-get update && apt-get install -y \
+    python3.10 python3.10-distutils python3.10-venv python3-pip \
+    curl git build-essential && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Set python aliases
+RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.10 1 && \
+    update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.10 1 && \
+    python3 -m pip install --upgrade pip
+
+# Install pipenv
+RUN python3 -m pip install pipenv
+
+# Set the working directory
+WORKDIR /app
+
+# Copy Pipfile and Pipfile.lock
+COPY Pipfile Pipfile.lock ./
+
+# Install dependencies using lockfile for reproducibility
+RUN pipenv install --dev --ignore-pipfile
+
+# Pre-download SegFormer model into Huggingface cache
+RUN pipenv run python -c "from transformers import SegformerForSemanticSegmentation; SegformerForSemanticSegmentation.from_pretrained('nvidia/segformer-b0-finetuned-ade-512-512')"
+
+# Register the pipenv environment as a Jupyter kernel
+RUN pipenv run python -m ipykernel install --name=pipenv-vision --display-name "Python (Pipenv Vision)" --sys-prefix
+
+# Expose Jupyter port
+EXPOSE 8888
+
+# Run Jupyter notebook using Pipenv
+CMD ["pipenv", "run", "jupyter", "notebook", "--ip=0.0.0.0", "--allow-root", "--NotebookApp.token=", "--NotebookApp.password="]
+

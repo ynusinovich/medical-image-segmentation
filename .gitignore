@@ -1,0 +1,31 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+
+# Jupyter Notebook Checkpoints
+.ipynb_checkpoints/
+
+# Pipenv and Python virtualenv
+Pipfile.lock
+
+# Pytest
+.pytest_cache/
+
+# MLflow and logs
+mlruns/
+*.log
+
+# IDE and editor folders
+.vscode/
+
+# Project-specific
+configs/
+data/*
+!data/test/
+!data/test/sample_input.jpeg
+figures/
+temp/
+old/
+models/
+optuna_study.db
+outputs/*
+!outputs/sample_input_predicted_mask.png
